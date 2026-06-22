@@ -23,47 +23,64 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: var(--bg);
+    background: #000;
     color: var(--text);
     font-family: var(--sans);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* Animated grid bg */
-  body::before {
-    content: '';
+  /* Galaxy canvas behind everything */
+  #galaxy-bg {
     position: fixed;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    animation: gridShift 20s linear infinite;
-    pointer-events: none;
+    width: 100%;
+    height: 100%;
     z-index: 0;
+    pointer-events: none;
   }
 
-  @keyframes gridShift {
-    0% { transform: translate(0,0); }
-    100% { transform: translate(40px, 40px); }
-  }
-
-  .glow-orb {
+  /* Galaxy HUD bottom-right */
+  #galaxy-hud {
     position: fixed;
-    border-radius: 50%;
-    filter: blur(100px);
+    bottom: 14px;
+    right: 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.28);
+    z-index: 2;
     pointer-events: none;
-    z-index: 0;
-    animation: orbFloat 8s ease-in-out infinite;
+    line-height: 1.7;
+    text-align: right;
   }
-  .orb1 { width: 400px; height: 400px; background: rgba(0,229,160,0.06); top: -100px; right: -100px; animation-delay: 0s; }
-  .orb2 { width: 300px; height: 300px; background: rgba(108,99,255,0.08); bottom: -50px; left: -80px; animation-delay: 3s; }
+  #galaxy-hud span { color: rgba(255,255,255,0.55); }
 
-  @keyframes orbFloat {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-30px) scale(1.05); }
+  /* Galaxy mode switcher top-right */
+  #galaxy-ctrl {
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 5;
   }
+  .gbtn {
+    background: rgba(0,0,0,0.5);
+    border: 0.5px solid rgba(255,255,255,0.14);
+    color: rgba(255,255,255,0.45);
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    padding: 4px 9px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .gbtn:hover { border-color: var(--accent); color: var(--accent); }
+  .gbtn.active { background: rgba(0,229,160,0.12); border-color: var(--accent); color: var(--accent); }
 
   .container {
     position: relative;
@@ -71,6 +88,30 @@
     max-width: 820px;
     margin: 0 auto;
     padding: 48px 24px;
+  }
+
+  .config-card {
+    background: rgba(22,22,31,0.75);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 56px 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.16,1,.3,1);
+    background: rgba(22,22,31,0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+    animation: fadeSlideUp 0.7s 0.25s cubic-bezier(.16,1,.3,1) both;
   }
 
   /* Header */
@@ -130,13 +171,6 @@
   @keyframes fadeSlideUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
-  }
-
-  .config-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
   }
 
   .config-label {
@@ -219,20 +253,6 @@
     letter-spacing: 0.08em;
   }
 
-  /* Drop zone */
-  .drop-zone {
-    border: 2px dashed var(--border);
-    border-radius: 16px;
-    padding: 56px 32px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(.16,1,.3,1);
-    background: var(--card);
-    position: relative;
-    overflow: hidden;
-    animation: fadeSlideUp 0.7s 0.25s cubic-bezier(.16,1,.3,1) both;
-  }
-
   .drop-zone::before {
     content: '';
     position: absolute;
@@ -282,7 +302,7 @@
     display: none;
     align-items: center;
     gap: 16px;
-    background: var(--card);
+    background: rgba(22,22,31,0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 16px 20px;
@@ -439,7 +459,7 @@
   .result-cards { display: flex; flex-direction: column; gap: 12px; }
 
   .result-card {
-    background: var(--card);
+    background: rgba(22,22,31,0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 18px 20px;
@@ -522,7 +542,7 @@
     margin-top: 16px;
     width: 100%;
     padding: 12px;
-    background: var(--card);
+    background: rgba(22,22,31,0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border);
     border-radius: 10px;
     color: var(--muted);
@@ -556,8 +576,20 @@
 </head>
 <body>
 
-<div class="glow-orb orb1"></div>
-<div class="glow-orb orb2"></div>
+<canvas id="galaxy-bg"></canvas>
+
+<div id="galaxy-hud">
+  FPS <span id="g-fps">60</span> &nbsp;·&nbsp; STARS <span id="g-sc">0</span><br>
+  MODE <span id="g-mode">GALAXY</span>
+</div>
+
+<div id="galaxy-ctrl">
+  <button class="gbtn active" id="gbGalaxy">GALAXY</button>
+  <button class="gbtn" id="gbNebula">NEBULA</button>
+  <button class="gbtn" id="gbPulsar">PULSAR</button>
+  <button class="gbtn" id="gbBlackhole">BLACK HOLE</button>
+  <button class="gbtn" id="gbBurst">BURST</button>
+</div>
 
 <div class="container">
   <header>
@@ -866,27 +898,30 @@ processBtn.addEventListener('click', async () => {
   });
 
   document.getElementById('resultsCount').textContent = outputFiles.length;
+  document.getElementById('downloadAllBtn').textContent = `⬇ Download all ${outputFiles.length} files`;
   document.getElementById('results').classList.add('visible');
 
-  // Download all ZIP
+  // Download all — one file at a time with a small delay so browser doesn't block
   document.getElementById('downloadAllBtn').onclick = async () => {
-    if (typeof JSZip === 'undefined') {
-      // Fallback: download one by one
-      outputFiles.forEach(f => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(f.blob);
-        a.download = f.name;
-        a.click();
-      });
-      return;
+    const btn = document.getElementById('downloadAllBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Downloading…';
+    for (let i = 0; i < outputFiles.length; i++) {
+      const f = outputFiles[i];
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(f.blob);
+      a.download = f.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      btn.textContent = `⏳ ${i + 1} / ${outputFiles.length} downloading…`;
+      await new Promise(r => setTimeout(r, 400));
     }
-    const zip = new JSZip();
-    outputFiles.forEach(f => zip.file(f.name, f.blob));
-    const zipBlob = await zip.generateAsync({type:'blob'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(zipBlob);
-    a.download = baseName + '_split.zip';
-    a.click();
+    btn.textContent = `✅ All ${outputFiles.length} files downloaded`;
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = `⬇ Download all ${outputFiles.length} files`;
+    }, 3000);
   };
 
   processBtn.disabled = false;
@@ -915,7 +950,355 @@ function parseCSVLine(line) {
 }
 </script>
 
-<!-- JSZip for zip download -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+// ── Galaxy Canvas Engine ─────────────────────────────────────────────────────
+(function(){
+  const canvas = document.getElementById('galaxy-bg');
+  const ctx = canvas.getContext('2d');
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); if(MODE==='GALAXY') initGalaxy(); else if(MODE==='BLACK HOLE') initBlackhole(); });
+
+  let MODE = 'GALAXY';
+  let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+  let mouseDown = false;
+  let frame = 0, lastT = performance.now();
+  let fpsArr = [];
+
+  window.addEventListener('mousemove', e=>{ mouseX=e.clientX; mouseY=e.clientY; });
+  window.addEventListener('mousedown', e=>{
+    mouseDown=true;
+    if(MODE==='BURST') spawnBurst(e.clientX, e.clientY, 80);
+  });
+  window.addEventListener('mouseup', ()=>mouseDown=false);
+  window.addEventListener('touchmove', e=>{
+    mouseX=e.touches[0].clientX; mouseY=e.touches[0].clientY;
+  },{passive:true});
+
+  // ── Typed-array particle pool ──────────────────────────────────────────────
+  const MAX = 2400;
+  const px   = new Float32Array(MAX);
+  const py   = new Float32Array(MAX);
+  const pvx  = new Float32Array(MAX);
+  const pvy  = new Float32Array(MAX);
+  const pr   = new Float32Array(MAX);
+  const palpha = new Float32Array(MAX);
+  const plife  = new Float32Array(MAX);
+  const pmaxlife = new Float32Array(MAX);
+  const phue   = new Float32Array(MAX);
+  const ptype  = new Uint8Array(MAX);
+  let count = 0;
+
+  function spawn(x,y,vx,vy,r,alpha,life,hue,type){
+    if(count>=MAX) return;
+    const i=count++;
+    px[i]=x; py[i]=y; pvx[i]=vx; pvy[i]=vy;
+    pr[i]=r; palpha[i]=alpha; plife[i]=life; pmaxlife[i]=life;
+    phue[i]=hue; ptype[i]=type;
+  }
+
+  function spawnBurst(x,y,n){
+    for(let i=0;i<n;i++){
+      const a=Math.random()*Math.PI*2;
+      const sp=1+Math.random()*5;
+      spawn(x,y, Math.cos(a)*sp,Math.sin(a)*sp,
+        0.5+Math.random()*2, 1, 60+Math.random()*60, 190+Math.random()*160, 0);
+    }
+  }
+
+  // ── Mode inits ─────────────────────────────────────────────────────────────
+  function initGalaxy(){
+    count=0;
+    const cx=canvas.width/2, cy=canvas.height/2;
+    const arms=3;
+    for(let a=0;a<arms;a++){
+      const base=(a/arms)*Math.PI*2;
+      for(let i=0;i<660;i++){
+        const t=Math.random();
+        const r=22+t*Math.min(canvas.width,canvas.height)*0.38;
+        const spread=(1-t)*0.4+0.05;
+        const theta=base+t*4+(Math.random()-.5)*spread*2;
+        const x=cx+Math.cos(theta)*r+(Math.random()-.5)*20*(1-t+0.2);
+        const y=cy+Math.sin(theta)*r*0.42+(Math.random()-.5)*10*(1-t+0.2);
+        const vx=(Math.random()-.5)*0.04;
+        const vy=(Math.random()-.5)*0.02;
+        const hue=195+Math.random()*130;
+        const sz=0.3+Math.random()*(t<0.3?2.2:1);
+        spawn(x,y,vx,vy,sz,0.55+Math.random()*0.45,9999,hue,0);
+      }
+    }
+    for(let i=0;i<130;i++){
+      const r2=Math.random()*28;
+      const a2=Math.random()*Math.PI*2;
+      spawn(canvas.width/2+Math.cos(a2)*r2, canvas.height/2+Math.sin(a2)*r2*0.42,
+        (Math.random()-.5)*0.15,(Math.random()-.5)*0.15,
+        0.5+Math.random()*1.8, 0.8+Math.random()*0.2, 9999, 45+Math.random()*25, 2);
+    }
+    setModeLabel('GALAXY');
+  }
+
+  function initNebula(){
+    count=0;
+    const cx=canvas.width/2, cy=canvas.height/2;
+    const rmax=Math.min(canvas.width,canvas.height)*0.42;
+    for(let i=0;i<1900;i++){
+      const a=Math.random()*Math.PI*2;
+      const r=Math.random()*Math.random()*rmax;
+      const x=cx+Math.cos(a)*r+(Math.random()-.5)*80;
+      const y=cy+Math.sin(a)*r+(Math.random()-.5)*80;
+      const hue=[280,200,160,340][Math.floor(Math.random()*4)];
+      spawn(x,y,(Math.random()-.5)*0.06,(Math.random()-.5)*0.06,
+        0.2+Math.random()*Math.random()*4, 0.1+Math.random()*0.5,
+        180+Math.random()*360, hue, 1);
+    }
+    setModeLabel('NEBULA');
+  }
+
+  function initPulsar(){
+    count=0;
+    setModeLabel('PULSAR');
+  }
+
+  function initBlackhole(){
+    count=0;
+    const cx=canvas.width/2, cy=canvas.height/2;
+    const rmax=Math.min(canvas.width,canvas.height)*0.38;
+    for(let i=0;i<1700;i++){
+      const a=Math.random()*Math.PI*2;
+      const r=60+Math.random()*rmax;
+      const x=cx+Math.cos(a)*r;
+      const y=cy+Math.sin(a)*r*0.48;
+      const sp=0.6+Math.random()*1.2;
+      const vx=-Math.sin(a)*sp*(1-Math.random()*0.3);
+      const vy=Math.cos(a)*sp*0.48*(1-Math.random()*0.3);
+      spawn(x,y,vx,vy, 0.3+Math.random()*1.2, 0.5+Math.random()*0.5, 9999, 185+Math.random()*80, 3);
+    }
+    setModeLabel('BLACK HOLE');
+  }
+
+  function initBurst(){
+    count=0;
+    setModeLabel('BURST');
+  }
+
+  function setModeLabel(m){
+    MODE=m;
+    document.getElementById('g-mode').textContent=m;
+  }
+
+  initGalaxy();
+
+  // ── Button wiring ──────────────────────────────────────────────────────────
+  const btnMap={gbGalaxy:initGalaxy,gbNebula:initNebula,gbPulsar:initPulsar,gbBlackhole:initBlackhole,gbBurst:initBurst};
+  Object.entries(btnMap).forEach(([id,fn])=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('active'));
+      el.classList.add('active');
+      fn();
+    });
+  });
+
+  // ── Physics ────────────────────────────────────────────────────────────────
+  let pulsarT=0;
+  function emitPulsar(){
+    const cx=canvas.width/2, cy=canvas.height/2;
+    pulsarT+=0.04;
+    [0,Math.PI*2/3,Math.PI*4/3].forEach(base=>{
+      for(let i=0;i<6;i++){
+        const a=base+pulsarT*2+(Math.random()-.5)*0.4;
+        const sp=2+Math.random()*3;
+        spawn(cx,cy,Math.cos(a)*sp,Math.sin(a)*sp,
+          0.5+Math.random()*1.5, 1, 80+Math.random()*60, 185+Math.sin(pulsarT)*60, 0);
+      }
+    });
+    if(frame%18===0){
+      for(let i=0;i<50;i++){
+        const a=(i/50)*Math.PI*2;
+        spawn(cx,cy,Math.cos(a)*1.6,Math.sin(a)*1.6, 0.5, 0.8, 50, 265+Math.random()*40, 0);
+      }
+    }
+  }
+
+  function emitBurst(){
+    if(mouseDown||frame%10===0){
+      const cx=mouseDown?mouseX:canvas.width/2;
+      const cy=mouseDown?mouseY:canvas.height/2;
+      spawnBurst(cx,cy,mouseDown?12:5);
+    }
+  }
+
+  function applyGalaxyRotation(){
+    const cx=canvas.width/2, cy=canvas.height/2;
+    for(let i=0;i<count;i++){
+      const dx=px[i]-cx, dy=py[i]-cy;
+      const dist=Math.sqrt(dx*dx+dy*dy)+1;
+      const angV=0.0022*(1+40/dist);
+      pvx[i]+=-dy/dist*angV;
+      pvy[i]+=dx/dist*angV*0.42;
+      pvx[i]*=0.982; pvy[i]*=0.982;
+    }
+  }
+
+  function applyBlackhole(){
+    const cx=canvas.width/2, cy=canvas.height/2;
+    const bhR=28;
+    for(let i=0;i<count;i++){
+      const dx=cx-px[i], dy=cy-py[i];
+      const dist=Math.sqrt(dx*dx+dy*dy)+1;
+      if(dist<bhR+2){
+        const a=Math.random()*Math.PI*2;
+        const r=60+Math.random()*Math.min(canvas.width,canvas.height)*0.38;
+        px[i]=cx+Math.cos(a)*r; py[i]=cy+Math.sin(a)*r*0.48;
+        const sp=0.6+Math.random()*1.2;
+        pvx[i]=-Math.sin(a)*sp; pvy[i]=Math.cos(a)*sp*0.48;
+      } else {
+        const f=80/(dist*dist);
+        pvx[i]+=dx/dist*f; pvy[i]+=dy/dist*f;
+        pvx[i]+=-dy/dist*0.04; pvy[i]+=dx/dist*0.04;
+        const spd=Math.sqrt(pvx[i]*pvx[i]+pvy[i]*pvy[i]);
+        if(spd>3.5){pvx[i]=pvx[i]/spd*3.5; pvy[i]=pvy[i]/spd*3.5;}
+      }
+    }
+  }
+
+  function applyMouseGravity(){
+    const str=mouseDown?0.35:0.06;
+    for(let i=0;i<count;i++){
+      const dx=mouseX-px[i], dy=mouseY-py[i];
+      const dist=Math.sqrt(dx*dx+dy*dy)+1;
+      if(dist<200){
+        const f=str/dist*2;
+        pvx[i]+=dx/dist*f; pvy[i]+=dy/dist*f;
+      }
+    }
+  }
+
+  // ── Backgrounds ────────────────────────────────────────────────────────────
+  function drawBlackholeBg(){
+    const cx=canvas.width/2, cy=canvas.height/2;
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,180);
+    g.addColorStop(0,'rgba(0,0,0,1)');
+    g.addColorStop(0.15,'rgba(4,0,18,0.95)');
+    g.addColorStop(0.45,'rgba(0,8,28,0.3)');
+    g.addColorStop(1,'transparent');
+    ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.save(); ctx.translate(cx,cy); ctx.scale(1,0.34);
+    for(let r=30;r<=68;r+=4){
+      const a=Math.sin(frame*0.02)*0.5+0.5;
+      ctx.strokeStyle=`hsla(${192+r},80%,65%,${0.035+a*0.025})`;
+      ctx.lineWidth=3; ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawNebulaBg(){
+    const cx=canvas.width/2, cy=canvas.height/2;
+    const rmax=Math.min(canvas.width,canvas.height)*0.38;
+    [[280,rmax*0.6,0.035],[200,rmax*0.7,0.025],[340,rmax*0.4,0.025]].forEach(([h,r,a])=>{
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+      g.addColorStop(0,`hsla(${h},70%,50%,${a})`);
+      g.addColorStop(1,'transparent');
+      ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height);
+    });
+  }
+
+  function drawCoreGlow(){
+    const cx=canvas.width/2, cy=canvas.height/2;
+    ctx.save(); ctx.translate(cx,cy); ctx.scale(1,0.42);
+    const g=ctx.createRadialGradient(0,0,0,0,0,55);
+    g.addColorStop(0,'hsla(48,100%,95%,0.22)');
+    g.addColorStop(0.35,'hsla(40,90%,70%,0.08)');
+    g.addColorStop(1,'transparent');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,55,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+  function renderParticles(){
+    for(let i=0;i<count;i++){
+      const life_ratio = pmaxlife[i]<9000 ? plife[i]/pmaxlife[i] : 1;
+      const a = ptype[i]===1 ? palpha[i]*(0.35+0.65*life_ratio) : palpha[i]*life_ratio;
+      if(a<=0.01) continue;
+      const h=phue[i], r=pr[i];
+      const l=ptype[i]===2?95:ptype[i]===3?75:70;
+      const s=ptype[i]===2?30:80;
+      ctx.fillStyle=`hsla(${h},${s}%,${l}%,${a})`;
+      ctx.beginPath(); ctx.arc(px[i],py[i],r,0,6.2832); ctx.fill();
+    }
+  }
+
+  // ── Main loop ───────────────────────────────────────────────────────────────
+  function loop(t){
+    requestAnimationFrame(loop);
+    frame++;
+    const dt=t-lastT; lastT=t;
+    fpsArr.push(1000/Math.max(dt,1));
+    if(fpsArr.length>24) fpsArr.shift();
+    if(frame%15===0){
+      const f=Math.round(fpsArr.reduce((a,b)=>a+b,0)/fpsArr.length);
+      document.getElementById('g-fps').textContent=f;
+      document.getElementById('g-sc').textContent=count;
+    }
+
+    // Trail clear
+    ctx.fillStyle='rgba(0,0,0,0.16)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // Mode logic
+    if(MODE==='BLACK HOLE'){ drawBlackholeBg(); applyBlackhole(); }
+    else if(MODE==='NEBULA'){ drawNebulaBg(); }
+    else if(MODE==='GALAXY'){ drawCoreGlow(); applyGalaxyRotation(); }
+    else if(MODE==='PULSAR'){ emitPulsar(); }
+    else if(MODE==='BURST'){ emitBurst(); }
+
+    applyMouseGravity();
+
+    // Update + compact alive particles
+    let alive=0;
+    for(let i=0;i<count;i++){
+      plife[i]-=1;
+      if(plife[i]<=0 && pmaxlife[i]<9000) continue;
+      px[i]+=pvx[i]; py[i]+=pvy[i];
+      if(px[i]<-12) px[i]=canvas.width+12;
+      else if(px[i]>canvas.width+12) px[i]=-12;
+      if(py[i]<-12) py[i]=canvas.height+12;
+      else if(py[i]>canvas.height+12) py[i]=-12;
+      if(alive!==i){
+        px[alive]=px[i]; py[alive]=py[i]; pvx[alive]=pvx[i]; pvy[alive]=pvy[i];
+        pr[alive]=pr[i]; palpha[alive]=palpha[i]; plife[alive]=plife[i];
+        pmaxlife[alive]=pmaxlife[i]; phue[alive]=phue[i]; ptype[alive]=ptype[i];
+      }
+      alive++;
+    }
+    count=alive;
+
+    // Nebula replenish
+    if(MODE==='NEBULA' && count<1300){
+      const cx=canvas.width/2, cy=canvas.height/2;
+      const rmax=Math.min(canvas.width,canvas.height)*0.42;
+      for(let i=0;i<8;i++){
+        const a=Math.random()*Math.PI*2;
+        const r=Math.random()*Math.random()*rmax;
+        const h=[280,200,160,340][Math.floor(Math.random()*4)];
+        spawn(cx+Math.cos(a)*r+(Math.random()-.5)*60,
+              cy+Math.sin(a)*r+(Math.random()-.5)*60,
+              (Math.random()-.5)*0.06,(Math.random()-.5)*0.06,
+              0.3+Math.random()*3, 0.1+Math.random()*0.4,
+              200+Math.random()*300, h, 1);
+      }
+    }
+
+    renderParticles();
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+
 </body>
 </html>
